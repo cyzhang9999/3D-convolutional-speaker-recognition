@@ -520,7 +520,8 @@ def main(_):
                                             :], fileh.root.label_train[start_idx:end_idx]
 
                 # This transpose is necessary for 3D convolutional operation which will be performed by TensorFlow.
-                speech_train = np.transpose(speech_train[None, :, :, :, :], axes=(1, 4, 2, 3, 0))
+                #speech_train = np.transpose(speech_train[None, :, :, :, :], axes=(1, 4, 2, 3, 0))
+                speech_train = np.transpose(speech_train[None, :, :, :, :], axes=(1, 2, 3, 4, 0))
 
                 # shuffling
                 index = random.sample(range(speech_train.shape[0]), speech_train.shape[0])
@@ -562,7 +563,8 @@ def main(_):
                                                                        start_idx:end_idx]
 
                 # Get the test batch.
-                speech_test = np.transpose(speech_test[None,:,:,:,:],axes=(1,4,2,3,0))
+                #speech_test = np.transpose(speech_test[None,:,:,:,:],axes=(1,4,2,3,0))
+                speech_test = np.transpose(speech_test[None, :, :, :, :], axes=(1, 2, 3, 4, 0))
 
                 # Evaluation
                 loss_value, test_accuracy, _ = sess.run([loss, accuracy, is_training],
