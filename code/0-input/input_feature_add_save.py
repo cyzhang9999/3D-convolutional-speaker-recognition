@@ -232,7 +232,7 @@ if __name__ == '__main__':
                         help='Location of sound files')
     args = parser.parse_args()
 
-    dataset = AudioDataset(files_path=args.file_path, audio_dir=args.audio_dir,
+    dataset = AudioDataset(files_path=args.file_path, audio_dir="",#args.audio_dir,
                            transform=Compose([CMVN(), Feature_Cube(cube_shape=(20, 80, 40), augmentation=True), ToOutput()]))
    
     # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
