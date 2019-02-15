@@ -47,7 +47,8 @@ class AudioDataset():
                 assert riff_size == file_size and os.path.getsize(sound_file_path) > 1000, "Bad file!"
 
                 # Add to list if file is OK!
-                list_files.append(x.strip())
+                if riff_size > 40000: #to omit small file
+                    list_files.append(x.strip())
             except OSError as err:
                 print("OS error: {0}".format(err))
             except ValueError:
