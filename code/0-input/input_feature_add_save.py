@@ -297,11 +297,11 @@ class data_saver():
                 test_label_list.append(label)
                 utterance_test.append(feature)
 
-        train_label_earray = fileh.create_earray("/", "label_train", tables.Atom.from_sctype(np.int16), shape=(0,),
+        train_label_earray = fileh.create_earray("/", "label_enrollment", tables.Atom.from_sctype(np.int16), shape=(0,),
                                                  filters=filters)
         train_label_earray.append(train_label_list)
 
-        test_label_earray = fileh.create_earray("/", "label_test", tables.Atom.from_sctype(np.int16), shape=(0,),
+        test_label_earray = fileh.create_earray("/", "label_evaluation", tables.Atom.from_sctype(np.int16), shape=(0,),
                                                 filters=filters)
         test_label_earray.append(test_label_list)
 
