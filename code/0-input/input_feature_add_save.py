@@ -269,7 +269,7 @@ class data_saver():
     def save_enrollment(file_path):
         dataset = AudioDataset(files_path=file_path, audio_dir="",  # args.audio_dir,
                                transform=Compose(
-                                   [CMVN(), Feature_Cube(cube_shape=(80, 40, 1), augmentation=True), ToOutput()]))
+                                   [CMVN(), Feature_Cube(cube_shape=(1, 80, 40), augmentation=True), ToOutput()]))
 
         # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
         # ex: batch_features = [dataset.__getitem__(idx)[0] for idx in range(32)]
@@ -278,11 +278,11 @@ class data_saver():
         filters = tables.Filters(complevel=5, complib="blosc")
         train_label_list = []
         utterance_train = fileh.create_earray("/", "utterance_enrollment", tables.Atom.from_sctype(np.float32),
-                                              shape=(0, 80, 40, 1),
+                                              shape=(0, 1, 80, 40),
                                               filters=filters)
         test_label_list = []
         utterance_test = fileh.create_earray("/", "utterance_evaluation", tables.Atom.from_sctype(np.float32),
-                                             shape=(0, 80, 40, 1),
+                                             shape=(0, 1, 80, 40),
                                              filters=filters)
         # utterance_earray.append(feature_list)
         random.seed(123)
