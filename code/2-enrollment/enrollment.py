@@ -276,7 +276,8 @@ def main(_):
         # The model predefinition.
         NumClasses = 2
         NumLogits = 128
-        MODEL = np.zeros((NumClasses, NumLogits), dtype=np.float32)
+        #MODEL = np.zeros((NumClasses, NumLogits), dtype=np.float32)
+        MODEL = np.zeros((len(subject_development), NumLogits), dtype=np.float32)
         model_map = {}
 
         # Go through the speakers.
