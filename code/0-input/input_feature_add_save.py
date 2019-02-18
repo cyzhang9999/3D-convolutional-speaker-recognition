@@ -213,6 +213,105 @@ class Compose(object):
         format_string += '\n)'
         return format_string
 
+class data_saver():
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def save_dev(file_path):
+        dataset = AudioDataset(files_path=file_path, audio_dir="",  # args.audio_dir,
+                               transform=Compose(
+                                   [CMVN(), Feature_Cube(cube_shape=(20, 80, 40), augmentation=True), ToOutput()]))
+
+        # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
+        # ex: batch_features = [dataset.__getitem__(idx)[0] for idx in range(32)]
+        # The batch_features is a list and len(batch_features)=32.
+        fileh = tables.open_file("./dev.hdf5", mode="w")
+        filters = tables.Filters(complevel=5, complib="blosc")
+        train_label_list = []
+        utterance_train = fileh.create_earray("/", "utterance_train", tables.Atom.from_sctype(np.float32),
+                                              shape=(0, 20, 80, 40),
+                                              filters=filters)
+        test_label_list = []
+        utterance_test = fileh.create_earray("/", "utterance_test", tables.Atom.from_sctype(np.float32),
+                                             shape=(0, 20, 80, 40),
+                                             filters=filters)
+        # utterance_earray.append(feature_list)
+        random.seed(123)
+        for idx in range(len(dataset)):
+            feature, label = dataset.__getitem__(idx)
+            print(label, feature.shape)
+            randint = random.randint(1, 10)
+            if randint > 2:
+                train_label_list.append(label)
+                utterance_train.append(feature)
+            else:
+                test_label_list.append(label)
+                utterance_test.append(feature)
+
+        train_label_earray = fileh.create_earray("/", "label_train", tables.Atom.from_sctype(np.int16), shape=(0,),
+                                                 filters=filters)
+        train_label_earray.append(train_label_list)
+
+        test_label_earray = fileh.create_earray("/", "label_test", tables.Atom.from_sctype(np.int16), shape=(0,),
+                                                filters=filters)
+        test_label_earray.append(test_label_list)
+
+        # utterance_earray = fileh.create_earray("/", "utterance_train", tables.Atom.from_dtype(feature.dtype),shape=(0, feature.shape[1],feature.shape[2],feature.shape[3]), filters=filters)
+        # utterance_earray.append(feature_list)
+        # for x in range(feature.shape[0]):
+        #    print(feature[x,].shape)
+        #    utterance_earray.append(feature[x,])
+        print(fileh)
+        fileh.close()
+
+    @staticmethod
+    def save_enrollment(file_path):
+        dataset = AudioDataset(files_path=file_path, audio_dir="",  # args.audio_dir,
+                               transform=Compose(
+                                   [CMVN(), Feature_Cube(cube_shape=(1, 80, 40), augmentation=True), ToOutput()]))
+
+        # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
+        # ex: batch_features = [dataset.__getitem__(idx)[0] for idx in range(32)]
+        # The batch_features is a list and len(batch_features)=32.
+        fileh = tables.open_file("./enrollment.hdf5", mode="w")
+        filters = tables.Filters(complevel=5, complib="blosc")
+        train_label_list = []
+        utterance_train = fileh.create_earray("/", "utterance_enrollment", tables.Atom.from_sctype(np.float32),
+                                              shape=(0, 1, 80, 40),
+                                              filters=filters)
+        test_label_list = []
+        utterance_test = fileh.create_earray("/", "utterance_evaluation", tables.Atom.from_sctype(np.float32),
+                                             shape=(0, 1, 80, 40),
+                                             filters=filters)
+        # utterance_earray.append(feature_list)
+        random.seed(123)
+        for idx in range(len(dataset)):
+            feature, label = dataset.__getitem__(idx)
+            print(label, feature.shape)
+            randint = random.randint(1, 10)
+            if randint > 2:
+                train_label_list.append(label)
+                utterance_train.append(feature)
+            else:
+                test_label_list.append(label)
+                utterance_test.append(feature)
+
+        train_label_earray = fileh.create_earray("/", "label_train", tables.Atom.from_sctype(np.int16), shape=(0,),
+                                                 filters=filters)
+        train_label_earray.append(train_label_list)
+
+        test_label_earray = fileh.create_earray("/", "label_test", tables.Atom.from_sctype(np.int16), shape=(0,),
+                                                filters=filters)
+        test_label_earray.append(test_label_list)
+
+        # utterance_earray = fileh.create_earray("/", "utterance_train", tables.Atom.from_dtype(feature.dtype),shape=(0, feature.shape[1],feature.shape[2],feature.shape[3]), filters=filters)
+        # utterance_earray.append(feature_list)
+        # for x in range(feature.shape[0]):
+        #    print(feature[x,].shape)
+        #    utterance_earray.append(feature[x,])
+        print(fileh)
+        fileh.close()
 
 if __name__ == '__main__':
     # add parser
@@ -231,8 +330,18 @@ if __name__ == '__main__':
     parser.add_argument('--audio_dir',
                         default=os.path.expanduser('~/github/3D-convolutional-speaker-recognition/code/0-input/Audio'),
                         help='Location of sound files')
+
+    parser.add_argument('--task_type',
+                        default="dev",
+                        help='develpment or enrollment')
     args = parser.parse_args()
 
+    if args.task_type == "develpment":
+        data_saver.save_dev(args.file_path)
+    elif args.task_type == "enrollment":
+        data_saver.save_enrollment(args.file_path)
+
+    '''
     dataset = AudioDataset(files_path=args.file_path, audio_dir="",#args.audio_dir,
                            transform=Compose([CMVN(), Feature_Cube(cube_shape=(20, 80, 40), augmentation=True), ToOutput()]))
    
@@ -278,3 +387,4 @@ if __name__ == '__main__':
     fileh.close()
     #print(feature.shape)
     #print(label)
+    '''
