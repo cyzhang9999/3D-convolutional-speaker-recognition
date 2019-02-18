@@ -326,6 +326,7 @@ def main(_):
             # Creating the speaker model
             MODEL[i,:] = speaker_model
             model_map[speaker_id] = i
+            i += 1
 
         if not os.path.exists(FLAGS.enrollment_dir):
             os.makedirs(FLAGS.enrollment_dir)
