@@ -301,7 +301,7 @@ def main(_):
             #                                         0:1], fileh.root.label_enrollment[start_idx:end_idx]
             speaker_enrollment, label_enrollment = fileh.root.utterance_enrollment[start_idx:end_idx, :, :,
                                                : ], fileh.root.label_enrollment[start_idx:end_idx]
-            speaker_enrollment = np.transpose(speaker_enrollment[None, :, :, :, :], axes=(0, 2, 3, 4, 1))
+            speaker_enrollment = np.transpose(speaker_enrollment[None, :, :, :, :], axes=(0, 1, 3, 4, 2))
             # Just adding a dimention for 3D convolutional operations.
             #speaker_enrollment = speaker_enrollment[None, :, :, :, :]
 
