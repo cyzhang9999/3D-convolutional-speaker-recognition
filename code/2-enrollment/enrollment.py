@@ -286,7 +286,7 @@ def main(_):
             # Get the indexes for each speaker in the enrollment data
             #speaker_index = np.where(fileh.root.label_enrollment[:] == speaker_class)[0]
             speaker_index = np.where(fileh.root.label_enrollment[:] == speaker_id)[0]
-            
+
             # Check the minumum required utterances per speaker.
             assert len(speaker_index) >= NumUtterance, "At least %d utterances is needed for each speaker" % NumUtterance
 
