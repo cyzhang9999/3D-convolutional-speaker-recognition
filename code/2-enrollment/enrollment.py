@@ -139,6 +139,7 @@ print("Evaluation data shape:", fileh.root.utterance_evaluation.shape)
 print("Evaluation label shape:",fileh.root.label_evaluation.shape)
 
 # Get the number of subjects
+subject_development = np.unique(fileh_development.root.label_train[:])
 num_subjects_development = len(np.unique(fileh_development.root.label_train[:]))
 
 
@@ -278,13 +279,14 @@ def main(_):
         MODEL = np.zeros((NumClasses, NumLogits), dtype=np.float32)
 
         # Go through the speakers.
-        for speaker_id, speaker_class in enumerate(range(1, 3)):
-
+        #for speaker_id, speaker_class in enumerate(range(1, 3)):
+        for speaker_id in subject_development:
             # The contributung number of utterances
             NumUtterance = 20
             # Get the indexes for each speaker in the enrollment data
-            speaker_index = np.where(fileh.root.label_enrollment[:] == speaker_class)[0]
-
+            #speaker_index = np.where(fileh.root.label_enrollment[:] == speaker_class)[0]
+            speaker_index = np.where(fileh.root.label_enrollment[:] == speaker_id)[0]
+            
             # Check the minumum required utterances per speaker.
             assert len(speaker_index) >= NumUtterance, "At least %d utterances is needed for each speaker" % NumUtterance
 
