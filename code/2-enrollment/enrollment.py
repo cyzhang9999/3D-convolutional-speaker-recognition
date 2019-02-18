@@ -277,9 +277,11 @@ def main(_):
         NumClasses = 2
         NumLogits = 128
         MODEL = np.zeros((NumClasses, NumLogits), dtype=np.float32)
+        model_map = {}
 
         # Go through the speakers.
         #for speaker_id, speaker_class in enumerate(range(1, 3)):
+        i = 0
         for speaker_id in subject_development:
             # The contributung number of utterances
             NumUtterance = 20
@@ -322,13 +324,17 @@ def main(_):
             speaker_model = feature_speaker
 
             # Creating the speaker model
-            MODEL[speaker_id,:] = speaker_model
+            MODEL[i,:] = speaker_model
+            model_map[speaker_id] = i
 
         if not os.path.exists(FLAGS.enrollment_dir):
             os.makedirs(FLAGS.enrollment_dir)
         # Save the created model.
         np.save(os.path.join(FLAGS.enrollment_dir , 'MODEL.npy'), MODEL)
-
+        entry_list = sorted(model_map.items(),key = lambda x:x[1])
+        with open(os.path.join(FLAGS.enrollment_dir,"model.map"),"w") as out:
+            for each_entry in entry_list:
+                out.write("%s %s\n" % (str(each_entry[0]),str(each_entry[1])))
 
 if __name__ == '__main__':
     tf.app.run()
