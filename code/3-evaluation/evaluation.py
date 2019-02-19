@@ -371,8 +371,9 @@ def main(_):
                 score = cosine_similarity(feature_vector[i:i+1,:], model)
                 score_vector[i*NumClasses + j] = score
                 print(score)
-                label_real = label_map[j+1]
+                label_real = label_map[j]
                 #if (j+1) == label_vector[i,:]:
+                print(label_real,label_vector[i,:])
                 if label_real == label_vector[i,:]:
                     target_label_vector[i*NumClasses + j] = 1
                 else:
