@@ -308,8 +308,12 @@ def main(_):
 
         speaker_model_path = os.path.join(FLAGS.enrollment_dir,'MODEL.npy')
         MODEL = np.load(speaker_model_path)
-
-
+        label_map = {}
+        with open(os.path.join(FLAGS.enrollment_dir,'model.map')) as in_handler:
+            for each_line in in_handler:
+                each_line = each_line.strip()
+                line_arr = each_line.split()
+                label_map[int(line_arr[1])] = line_arr[0]
 
         feature_vector = np.zeros((num_batches_per_epoch_test*FLAGS.batch_size, 128))
         label_vector = np.zeros((num_batches_per_epoch_test * FLAGS.batch_size, 1))
@@ -366,8 +370,10 @@ def main(_):
                 model = MODEL[j:j+1, :]
                 score = cosine_similarity(feature_vector[i:i+1,:], model)
                 score_vector[i*NumClasses + j] = score
-                # print(score)
-                if (j+1) == label_vector[i,:]:
+                print(score)
+                label_real = label_map[j+1]
+                #if (j+1) == label_vector[i,:]:
+                if label_real == label_vector[i,:]:
                     target_label_vector[i*NumClasses + j] = 1
                 else:
                     target_label_vector[i * NumClasses + j] = 0
