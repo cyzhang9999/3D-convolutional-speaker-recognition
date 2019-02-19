@@ -199,7 +199,7 @@ def main(_):
         #############################
         tower_grads = []
         with tf.variable_scope(tf.get_variable_scope()):
-            for i in xrange(FLAGS.num_clones):
+            for i in range(FLAGS.num_clones):
                 with tf.device('/gpu:%d' % i):
                     with tf.name_scope('%s_%d' % ('tower', i)) as scope:
                         """
@@ -326,6 +326,7 @@ def main(_):
 
             # Copy to match dimension
             speech_evaluation = np.repeat(speech_evaluation,20,axis=3)
+            print(speech_evaluation.shape)
             speech_evaluation = np.transpose(speech_evaluation[None, :, :, :, :], axes=(1, 4, 2, 3, 0))
 
 
