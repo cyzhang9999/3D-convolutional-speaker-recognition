@@ -321,9 +321,10 @@ def main(_):
             step += 1
             start_idx = batch_num * FLAGS.batch_size
             end_idx = (batch_num + 1) * FLAGS.batch_size
+            #speech_evaluation, label_evaluation = fileh.root.utterance_evaluation[start_idx:end_idx, :, :,
+            #                                      0:1], fileh.root.label_evaluation[start_idx:end_idx]
             speech_evaluation, label_evaluation = fileh.root.utterance_evaluation[start_idx:end_idx, :, :,
-                                                  0:1], fileh.root.label_evaluation[start_idx:end_idx]
-
+                                                  :], fileh.root.label_evaluation[start_idx:end_idx]
             # Copy to match dimension
             speech_evaluation = np.repeat(speech_evaluation,20,axis=3)
             print(speech_evaluation.shape)
