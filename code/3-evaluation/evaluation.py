@@ -313,7 +313,7 @@ def main(_):
             for each_line in in_handler:
                 each_line = each_line.strip()
                 line_arr = each_line.split()
-                label_map[int(line_arr[1])] = line_arr[0]
+                label_map[int(line_arr[1])] = str(line_arr[0])
 
         feature_vector = np.zeros((num_batches_per_epoch_test*FLAGS.batch_size, 128))
         label_vector = np.zeros((num_batches_per_epoch_test * FLAGS.batch_size, 1))
@@ -362,7 +362,7 @@ def main(_):
         score_vector = np.zeros((feature_vector.shape[0]*NumClasses, 1))
         target_label_vector = np.zeros((feature_vector.shape[0]*NumClasses, 1))
 
-
+        out_array = []
         for i in range(feature_vector.shape[0]):
             if i % 100 ==0:
                 print("processing file %d from %d" %(i,feature_vector.shape[0]))
@@ -370,11 +370,12 @@ def main(_):
                 model = MODEL[j:j+1, :]
                 score = cosine_similarity(feature_vector[i:i+1,:], model)
                 score_vector[i*NumClasses + j] = score
-                print(score)
                 label_real = label_map[j]
                 #if (j+1) == label_vector[i,:]:
-                print(label_real,label_vector[i,:])
-                if label_real == label_vector[i,:]:
+                label_test = str(int(label_vector[i,0:1]))
+                print(label_real,label_test,score)
+                out_array.append((label_real,label_test,score))
+                if label_real == label_test:
                     target_label_vector[i*NumClasses + j] = 1
                 else:
                     target_label_vector[i * NumClasses + j] = 0
@@ -384,7 +385,9 @@ def main(_):
             os.makedirs(FLAGS.evaluation_dir)
         np.save(os.path.join(FLAGS.evaluation_dir,'score_vector.npy'),score_vector)
         np.save(os.path.join(FLAGS.evaluation_dir,'target_label_vector.npy'),target_label_vector)
-
+        with open(os.path.join(FLAGS.evaluation_dir,'score.log'),"w") as out_handler:
+            for each_tuple in out_array:
+                out_handler.write("%s %s %f\n" % (each_tuple[0],each_tuple[1],each_tuple[2]))
 
 
 if __name__ == '__main__':
