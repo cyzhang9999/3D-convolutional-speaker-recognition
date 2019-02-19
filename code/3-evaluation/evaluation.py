@@ -326,9 +326,11 @@ def main(_):
             speech_evaluation, label_evaluation = fileh.root.utterance_evaluation[start_idx:end_idx, :, :,
                                                   :], fileh.root.label_evaluation[start_idx:end_idx]
             # Copy to match dimension
-            speech_evaluation = np.repeat(speech_evaluation,20,axis=3)
+            #speech_evaluation = np.repeat(speech_evaluation,20,axis=3)
+            speech_evaluation = np.repeat(speech_evaluation, 20, axis=1)
             print(speech_evaluation.shape)
-            speech_evaluation = np.transpose(speech_evaluation[None, :, :, :, :], axes=(1, 4, 2, 3, 0))
+            #speech_evaluation = np.transpose(speech_evaluation[None, :, :, :, :], axes=(1, 4, 2, 3, 0))
+            speech_evaluation = np.transpose(speech_evaluation[None, :, :, :, :], axes=(0, 2, 3, 4, 1))
 
 
             feature = sess.run(
