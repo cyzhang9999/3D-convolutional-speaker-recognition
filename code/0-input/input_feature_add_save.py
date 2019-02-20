@@ -397,8 +397,8 @@ if __name__ == '__main__':
                         help='develpment or enrollment')
     args = parser.parse_args()
 
-    if args.task_type == "develpment":
-        data_saver.save_dev(args.file_path)
+    if args.task_type == "development":
+        data_saver.save_dev_v2(args.file_path)
     elif args.task_type == "enrollment":
         data_saver.save_enrollment(args.file_path)
 
