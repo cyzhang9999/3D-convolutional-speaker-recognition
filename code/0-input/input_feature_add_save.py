@@ -389,7 +389,7 @@ class data_saver():
         # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
         # ex: batch_features = [dataset.__getitem__(idx)[0] for idx in range(32)]
         # The batch_features is a list and len(batch_features)=32.
-        fileh = tables.open_file("./enrollment.hdf5", mode="w")
+        fileh = tables.open_file("./enrollment_v2.hdf5", mode="w")
         filters = tables.Filters(complevel=5, complib="blosc")
         train_label_list = []
         utterance_train = fileh.create_earray("/", "utterance_enrollment", tables.Atom.from_sctype(np.float32),
