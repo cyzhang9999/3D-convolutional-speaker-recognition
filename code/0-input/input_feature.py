@@ -95,7 +95,7 @@ class AudioDataset():
         logenergy = speechpy.feature.lmfe(signal, sampling_frequency=fs, frame_length=0.025, frame_stride=0.01,
                                           num_filters=num_coefficient, fft_length=1024, low_frequency=0,
                                           high_frequency=None)
-
+        print(logenergy.shape)
         ########################
         ### Handling sample ####
         ########################
