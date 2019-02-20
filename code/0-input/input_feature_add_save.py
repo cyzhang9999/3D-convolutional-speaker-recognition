@@ -220,7 +220,8 @@ class data_saver():
 
     @staticmethod
     def save_dev_v2(file_path):
-        dataset = AudioDataset(files_path=file_path, audio_dir="")  # args.audio_dir,)
+        dataset = AudioDataset(files_path=file_path, audio_dir="",transform=Compose(
+                                   [CMVN(), Feature_Cube(cube_shape=(20, 80, 40), augmentation=True), ToOutput()]))  # args.audio_dir,)
 
         # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
         # ex: batch_features = [dataset.__getitem__(idx)[0] for idx in range(32)]
