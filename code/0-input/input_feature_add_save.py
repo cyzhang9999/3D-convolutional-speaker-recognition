@@ -456,7 +456,7 @@ if __name__ == '__main__':
     if args.task_type == "development":
         data_saver.save_dev_v2(args.file_path)
     elif args.task_type == "enrollment":
-        data_saver.save_enrollment(args.file_path)
+        data_saver.save_enrollment_v2(args.file_path)
 
     '''
     dataset = AudioDataset(files_path=args.file_path, audio_dir="",#args.audio_dir,
