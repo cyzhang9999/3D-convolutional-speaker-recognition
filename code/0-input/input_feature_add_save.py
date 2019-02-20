@@ -219,6 +219,17 @@ class data_saver():
         pass
 
     @staticmethod
+    def get_label_map():
+        label_map = {}
+        label_map_path = "./label_map"
+        with open(label_map_path) as in_handler:
+            for each_line in in_handler:
+                each_line = each_line.strip()
+                line_arr = each_line.split()
+                label_map[line_arr[0]] = int(line_arr[1])
+        return label_map
+
+    @staticmethod
     def save_dev_v2(file_path):
         dataset = AudioDataset(files_path=file_path, audio_dir="",transform=Compose(
                                    [CMVN(), Feature_Cube(cube_shape=(20, 80, 40), augmentation=True), ToOutput()]))  # args.audio_dir,)
@@ -242,13 +253,7 @@ class data_saver():
                                              filters=filters)
         # utterance_earray.append(feature_list)
         label_index = 0
-        label_map = {}
-        label_map_path = "./label_map"
-        with open(label_map_path) as in_handler:
-            for each_line in in_handler:
-                each_line = each_line.strip()
-                line_arr = each_line.split()
-                label_map[line_arr[0]] = int(line_arr[1])
+        label_map = data_saver.get_label_map()
 
         random.seed(123)
         for idx in range(len(dataset)):
@@ -357,6 +362,56 @@ class data_saver():
                 utterance_train.append(feature)
             else:
                 test_label_list.append(label)
+                utterance_test.append(feature)
+
+        train_label_earray = fileh.create_earray("/", "label_enrollment", tables.Atom.from_sctype(np.int16), shape=(0,),
+                                                 filters=filters)
+        train_label_earray.append(train_label_list)
+
+        test_label_earray = fileh.create_earray("/", "label_evaluation", tables.Atom.from_sctype(np.int16), shape=(0,),
+                                                filters=filters)
+        test_label_earray.append(test_label_list)
+
+        # utterance_earray = fileh.create_earray("/", "utterance_train", tables.Atom.from_dtype(feature.dtype),shape=(0, feature.shape[1],feature.shape[2],feature.shape[3]), filters=filters)
+        # utterance_earray.append(feature_list)
+        # for x in range(feature.shape[0]):
+        #    print(feature[x,].shape)
+        #    utterance_earray.append(feature[x,])
+        print(fileh)
+        fileh.close()
+
+    @staticmethod
+    def save_enrollment_v2(file_path):
+        dataset = AudioDataset(files_path=file_path, audio_dir="",  # args.audio_dir,
+                               transform=Compose(
+                                   [CMVN(), Feature_Cube(cube_shape=(1, 80, 40), augmentation=True), ToOutput()]))
+
+        # idx is the representation of the batch size which chosen to be as one sample (index) from the data.
+        # ex: batch_features = [dataset.__getitem__(idx)[0] for idx in range(32)]
+        # The batch_features is a list and len(batch_features)=32.
+        fileh = tables.open_file("./enrollment.hdf5", mode="w")
+        filters = tables.Filters(complevel=5, complib="blosc")
+        train_label_list = []
+        utterance_train = fileh.create_earray("/", "utterance_enrollment", tables.Atom.from_sctype(np.float32),
+                                              shape=(0, 1, 80, 40),
+                                              filters=filters)
+        test_label_list = []
+        utterance_test = fileh.create_earray("/", "utterance_evaluation", tables.Atom.from_sctype(np.float32),
+                                             shape=(0, 1, 80, 40),
+                                             filters=filters)
+        # utterance_earray.append(feature_list)
+        label_map = data_saver.get_label_map()
+        random.seed(123)
+        for idx in range(len(dataset)):
+            feature, label = dataset.__getitem__(idx)
+            label_index = label_map[label]
+            print(label,label_index, feature.shape)
+            randint = random.randint(1, 10)
+            if randint > 2:
+                train_label_list.append(label_index)
+                utterance_train.append(feature)
+            else:
+                test_label_list.append(label_index)
                 utterance_test.append(feature)
 
         train_label_earray = fileh.create_earray("/", "label_enrollment", tables.Atom.from_sctype(np.int16), shape=(0,),
